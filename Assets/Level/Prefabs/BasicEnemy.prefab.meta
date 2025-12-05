@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Code/Scripts/Player.meta
+guid: 1e56540e241e4814d9d6a7f0d7d017b3
+folderAsset: yes
+DefaultImporter:
+========
+guid: cf77ab329d395f142bc9155a3a39ab20
+PrefabImporter:
+>>>>>>>> 327f16f ([HP-13] Added Basic Enemy Behavior):Assets/Level/Prefabs/BasicEnemy.prefab.meta
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
