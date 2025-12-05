@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -6,12 +7,12 @@ public class PlayerJump : MonoBehaviour
     #region Variables
 
     [Header("Jump Settings")]
-    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float jumpForce = 8.85f;
     [SerializeField] private int maxJumps = 2;
 
     [Header("Variable Jump")]
-    public float jumpCutMultiplier = 0.5f;   // reduces upward velocity
-    public float fallMultiplier = 2f;        // increases gravity when falling
+    public float jumpCutMultiplier = 0.5f;
+    public float fallMultiplier = 2f;
 
     [Header("Coyote Time")]
     [SerializeField] private float coyoteTime = 0.1f;
@@ -52,14 +53,13 @@ public class PlayerJump : MonoBehaviour
 
     private void HandleTimers()
     {
-        // Coyote time
-        coyoteTimer = movement.IsGrounded ?
-              coyoteTime :
-              coyoteTimer - Time.deltaTime;
+        coyoteTimer = movement.IsGrounded
+            ? coyoteTime
+            : coyoteTimer - Time.deltaTime;
 
-        jumpBufferTimer = input.JumpPressed ?
-                          jumpBufferTime :
-                          jumpBufferTimer - Time.deltaTime;
+        jumpBufferTimer = input.JumpPressed
+            ? jumpBufferTime
+            : jumpBufferTimer - Time.deltaTime;
     }
 
     private void HandleJump()
@@ -79,7 +79,9 @@ public class PlayerJump : MonoBehaviour
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
         jumpCount++;
-        coyoteTimer = 0f; // no coyote after jumping
+        coyoteTimer = 0f;
+        movement.IsGrounded = false;
+        Debug.Log("isGrounded:" + movement.IsGrounded);
     }
 
     private void ApplyVariableJump()
@@ -102,8 +104,6 @@ public class PlayerJump : MonoBehaviour
         if (movement.IsGrounded)
             jumpCount = 0;
     }
-
-
 
     #endregion
 }

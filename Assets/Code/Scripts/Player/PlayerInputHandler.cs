@@ -1,17 +1,24 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
-    private Controls input;  // your generated input class
+    #region Variables
+
+    private Controls input;
 
     public Vector2 MoveInput { get; private set; }
     public bool JumpPressed { get; private set; }
     public bool JumpHeld { get; private set; }
 
+    #endregion
+
+    #region Unity Methods
+
     private void Awake()
     {
-        input = new Controls();
+        input ??= new Controls();
     }
 
     private void OnEnable()
@@ -23,10 +30,8 @@ public class PlayerInputHandler : MonoBehaviour
         input.Player.Move.canceled += OnMove;
 
         // Jump
-        input.Player.Jump.performed += ctx => JumpPressed = true;
-        input.Player.Jump.canceled += ctx => JumpHeld = false;
-
-
+        input.Player.Jump.performed += OnJump;
+        input.Player.Jump.canceled += OnJumpCanceled;
     }
 
     private void OnDisable()
@@ -37,10 +42,15 @@ public class PlayerInputHandler : MonoBehaviour
 
         // Jump
         input.Player.Jump.performed -= OnJump;
+        input.Player.Jump.canceled -= OnJumpCanceled;
 
 
         input.Disable();
     }
+
+    #endregion
+
+    #region Input Callbacks
 
     private void OnMove(InputAction.CallbackContext ctx)
     {
@@ -50,9 +60,15 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnJump(InputAction.CallbackContext ctx)
     {
         JumpPressed = true;
+        JumpHeld = true;
     }
 
+    private void OnJumpCanceled(InputAction.CallbackContext ctx)
+    {
+        JumpHeld = false;
+    }
 
+    #endregion
 
     private void LateUpdate()
     {

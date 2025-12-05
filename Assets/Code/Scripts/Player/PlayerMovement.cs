@@ -3,16 +3,17 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
-    public bool IsGrounded { get; private set; }
+    public bool IsGrounded { get; set; }
 
-    #region Veriables
+    #region Variables
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundCheckRadius = 0.15f;
+    [SerializeField] private Vector2 boxSize = new Vector2(0.02f, 0.05f);
+    [SerializeField] private float castDistance = 0.1f;
     [SerializeField] private LayerMask groundLayer;
 
     private Rigidbody2D rb;
@@ -26,16 +27,18 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInputHandler>();
-        groundCheck = groundCheck ?? throw new System.Exception("groundCheck not assigned!");
     }
 
-    void Update()
+    private void Update()
     {
-        IsGrounded = Physics2D.OverlapCircle(
-            groundCheck.position,
-            groundCheckRadius,
-            groundLayer
-        );
+        IsGrounded = Physics2D.BoxCast(
+            groundCheck.position,  // The center point of the box (set by your child Transform)
+            boxSize,               // The width and height of the box (e.g., 0.8 width, 0.05 height)
+            0f,                    // Angle of the box (0 means no rotation)
+            Vector2.down,          // Direction of the cast (downwards)
+            castDistance,          // How far the box is projected
+            groundLayer            // Only checks colliders on this layer
+        ).collider != null;        // The BoxCast returns RaycastHit2D; check if a collider was hit
     }
 
     private void FixedUpdate()
@@ -46,11 +49,17 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
-    private void OnDrawGizmosSelected()
+    // Draw Gizmo
+    private void OnDrawGizmos()
     {
-        if (!groundCheck) return;
+        if (groundCheck != null)
+        {
+            Gizmos.color = IsGrounded ? Color.green : Color.red;
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+            Gizmos.DrawWireCube(
+                (Vector2)groundCheck.position + Vector2.down * castDistance,
+                boxSize
+            );
+        }
     }
 }
