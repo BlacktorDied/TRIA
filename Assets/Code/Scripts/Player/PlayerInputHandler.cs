@@ -11,40 +11,31 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector2 MoveInput { get; private set; }
     public bool JumpPressed { get; private set; }
     public bool JumpHeld { get; private set; }
+    public bool AttackPressed { get; private set; }
 
     #endregion
 
     #region Unity Methods
 
-    private void Awake()
-    {
-        input ??= new Controls();
-    }
+    private void Awake() => input ??= new Controls();
 
     private void OnEnable()
     {
         input.Enable();
-
-        // Movement
         input.Player.Move.performed += OnMove;
         input.Player.Move.canceled += OnMove;
-
-        // Jump
-        input.Player.Jump.performed += OnJump;
+        input.Player.Jump.started += OnJumpStarted;
         input.Player.Jump.canceled += OnJumpCanceled;
+        //input.Player.Attack.started += OnAttackStarted;
     }
 
     private void OnDisable()
     {
-        // Movement
         input.Player.Move.performed -= OnMove;
         input.Player.Move.canceled -= OnMove;
-
-        // Jump
-        input.Player.Jump.performed -= OnJump;
+        input.Player.Jump.started -= OnJumpStarted;
         input.Player.Jump.canceled -= OnJumpCanceled;
-
-
+        //input.Player.Attack.started -= OnAttackStarted;
         input.Disable();
     }
 
@@ -52,21 +43,10 @@ public class PlayerInputHandler : MonoBehaviour
 
     #region Input Callbacks
 
-    private void OnMove(InputAction.CallbackContext ctx)
-    {
-        MoveInput = ctx.ReadValue<Vector2>();
-    }
-
-    private void OnJump(InputAction.CallbackContext ctx)
-    {
-        JumpPressed = true;
-        JumpHeld = true;
-    }
-
-    private void OnJumpCanceled(InputAction.CallbackContext ctx)
-    {
-        JumpHeld = false;
-    }
+    private void OnMove(InputAction.CallbackContext ctx) => MoveInput = ctx.ReadValue<Vector2>();
+    private void OnJumpStarted(InputAction.CallbackContext ctx) { JumpPressed = true; JumpHeld = true; }
+    private void OnJumpCanceled(InputAction.CallbackContext ctx) => JumpHeld = false;
+    //private void OnAttackStarted(InputAction.CallbackContext ctx) => AttackPressed = true;
 
     #endregion
 
@@ -74,5 +54,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         JumpPressed = false;
         JumpHeld = input.Player.Jump.IsPressed();
+        AttackPressed = false;
     }
+
 }

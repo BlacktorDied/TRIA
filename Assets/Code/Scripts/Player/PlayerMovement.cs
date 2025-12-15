@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private Vector2 boxSize = new Vector2(0.02f, 0.05f);
+    [SerializeField] private Vector2 boxSize = new Vector2(0.8f, 0.05f);
     [SerializeField] private float castDistance = 0.1f;
     [SerializeField] private LayerMask groundLayer;
 
