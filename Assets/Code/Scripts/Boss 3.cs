@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
-public class Boss : MonoBehaviour
+public class Boss3 : MonoBehaviour
 {
     #region Variables
 
@@ -22,8 +22,8 @@ public class Boss : MonoBehaviour
 
     [Header("Sky Attack")]
     [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private IntRange jumpsBeforeSkyAttack;
-    [SerializeField] private IntRange bulletCount;
+    [SerializeField] private IntRange jumpsBeforeSkyAttack = new IntRange { min = 8, max = 12};
+    [SerializeField] private IntRange bulletCount = new IntRange { min = 8, max =  15};
 
     [Header("Slam Attack")]
     [SerializeField] private float slamHoverHeight = 3f;
@@ -76,7 +76,8 @@ public class Boss : MonoBehaviour
                 {
                     Vector3 randomTarget = new Vector3(
                         Random.Range(minX, maxX),
-                        GetGroundHeightAt(player.position.x),
+                        //GetGroundHeightAt(transform.position.y),
+                        -7.5f,
                         transform.position.z
                     );
 
@@ -89,31 +90,32 @@ public class Boss : MonoBehaviour
             }
 
             yield return SkyAttack();
+
+            yield return new WaitForSeconds(1f);
         }
     }
 
-    #region Jump Logic
+    //float GetGroundHeightAt(float xPos)
+    //{
+    //    var col = GetComponent<Collider2D>();
 
-    float GetGroundHeightAt(float xPos)
-    {
-        var col = GetComponent<Collider2D>();
+    //    RaycastHit2D hit = Physics2D.BoxCast(
+    //        new Vector2(xPos, skyPoint.position.y),
+    //        new Vector2(3f, 0.1f),
+    //        0f,
+    //        Vector2.down,
+    //        50f,
+    //        LayerMask.GetMask("Ground")
+    //    );
 
-        RaycastHit2D hit = Physics2D.BoxCast(
-            new Vector2(xPos, skyPoint.position.y),
-            new Vector2(3f, 0.1f),
-            0f,
-            Vector2.down,
-            50f,
-            LayerMask.GetMask("Ground")
-        );
+    //    if (hit.collider != null) return hit.point.y + col.bounds.extents.y;
 
-        if (hit.collider != null) return hit.point.y + col.bounds.extents.y;
-
-        return transform.position.y;
-    }
+    //    return transform.position.y;
+    //}
 
     IEnumerator JumpTo(Vector3 target, float duration, float peak)
     {
+        Vector3 start = transform.position;
         float elapsed = 0f;
 
         while (elapsed < duration)
@@ -122,7 +124,7 @@ public class Boss : MonoBehaviour
             float t = elapsed / duration;
 
             float height = Mathf.Sin(t * Mathf.PI) * peak;
-            Vector3 pos = Vector3.Lerp(transform.position, target, t);
+            Vector3 pos = Vector3.Lerp(start, target, t);
             pos.y += height;
 
             transform.position = pos;
@@ -131,10 +133,6 @@ public class Boss : MonoBehaviour
 
         transform.position = target;
     }
-
-    #endregion
-
-    #region Slam Attack
 
     IEnumerator SlamAttack(int repeatCount)
     {
@@ -147,6 +145,7 @@ public class Boss : MonoBehaviour
             );
 
             yield return JumpTo(hoverPoint, 0.3f, 1.5f);
+
             yield return new WaitForSeconds(slamHoverTime);
 
             Vector3 groundPoint = new Vector3(
@@ -167,20 +166,11 @@ public class Boss : MonoBehaviour
         }
     }
 
-    #endregion
-
-    #region Sky Attack
-
     IEnumerator SkyAttack()
     {
         yield return JumpTo(skyPoint.position, jumpDuration.RandomValue, jumpPeak.RandomValue);
-        ShootDownwardBullets(bulletCount.RandomValue);
-        yield return new WaitForSeconds(1f);
-    }
 
-    void ShootDownwardBullets(int count)
-    {
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < bulletCount.RandomValue; i++)
         {
             GameObject proj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
 
@@ -190,11 +180,11 @@ public class Boss : MonoBehaviour
             ).normalized;
 
             Projectile p = proj.GetComponent<Projectile>();
+
             if (p != null) p.direction = dir;
         }
     }
 
-    #endregion
 
     private void OnDrawGizmosSelected()
     {
