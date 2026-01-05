@@ -13,6 +13,7 @@ public class PlayerAttack : MonoBehaviour
 
     private PlayerInputHandler input;
     private PlayerMovement movement;
+    private PlayerAudio playerAudio;
 
     private float timeSinceAttack;
 
@@ -24,6 +25,7 @@ public class PlayerAttack : MonoBehaviour
     {
         input = GetComponent<PlayerInputHandler>();
         movement = GetComponent<PlayerMovement>();
+        playerAudio = GetComponent<PlayerAudio>();
     }
 
     void Update()
@@ -41,6 +43,7 @@ public class PlayerAttack : MonoBehaviour
         if (timeSinceAttack < attackDelay) return;
 
         timeSinceAttack = 0f;
+        playerAudio?.PlayAttack();
 
         if (input.MoveInput.y > 0.5)
         {

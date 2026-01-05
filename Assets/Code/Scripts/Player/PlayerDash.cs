@@ -11,7 +11,8 @@ public class PlayerDash : MonoBehaviour
 
     private Rigidbody2D rb;
     private PlayerInputHandler input;
-    
+    private PlayerAudio playerAudio;
+
     public bool IsDashing => isDashing;
     private bool isDashing;
     private float lastDashTime;
@@ -22,6 +23,8 @@ public class PlayerDash : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInputHandler>();
+        playerAudio = GetComponent<PlayerAudio>();
+
         normalGravity = rb.gravityScale;
     }
 
@@ -39,6 +42,8 @@ public class PlayerDash : MonoBehaviour
     {
         isDashing = true;
         lastDashTime = Time.time;
+
+        playerAudio?.PlayDash();
 
         float xInput = input.MoveInput.x;
 

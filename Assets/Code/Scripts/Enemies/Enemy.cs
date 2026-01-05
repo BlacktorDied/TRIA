@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float attackCooldown = 1f;
 
     protected Rigidbody2D rb;
+
     private float lastAttackTime;
 
     protected virtual void Start()
