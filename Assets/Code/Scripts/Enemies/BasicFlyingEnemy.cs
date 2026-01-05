@@ -13,8 +13,6 @@ public class FollowEnemy : Enemy
     [SerializeField] private Transform player;
     [SerializeField] private float detectionRange = 8f;
 
-    private Rigidbody2D rb;
-
     #endregion
 
     #region Unity Methods
@@ -22,8 +20,6 @@ public class FollowEnemy : Enemy
     protected override void Start()
     {
         base.Start();
-
-        rb = GetComponent<Rigidbody2D>();
     }
 
     protected override void Update()
