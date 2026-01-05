@@ -2,31 +2,30 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+
 public class PlayerJump : MonoBehaviour
 {
     #region Variables
 
     [Header("Jump Settings")]
-    [SerializeField] private float jumpForce = 8.85f;
-    [SerializeField] private int maxJumps = 2;
+    [SerializeField] private float jumpForce = 9f;
+    [SerializeField] private int maxAirJumps = 0;
+    private int jumpsRemaining;
 
-    [Header("Variable Jump")]
-    public float jumpCutMultiplier = 0.5f;
-    public float fallMultiplier = 2f;
+    [Header("Variable Jump Settings")]
+    [SerializeField] private float jumpCutMultiplier = 0.5f;
+    [SerializeField] private float fallMultiplier = 2f;
 
-    [Header("Coyote Time")]
+    [Header("Timers Settings")]
     [SerializeField] private float coyoteTime = 0.1f;
-    private float coyoteTimer;
-
-    [Header("Jump Buffer")]
     [SerializeField] private float jumpBufferTime = 0.1f;
+    private float coyoteTimer;
     private float jumpBufferTimer;
 
     private Rigidbody2D rb;
     private PlayerInputHandler input;
     private PlayerMovement movement;
 
-    private int jumpCount;
 
     #endregion
 
@@ -43,9 +42,14 @@ public class PlayerJump : MonoBehaviour
     {
         HandleTimers();
         HandleJump();
+    }
+
+    void FixedUpdate()
+    {
         ApplyVariableJump();
         ResetJumpsIfGrounded();
     }
+
 
     #endregion
 
@@ -60,39 +64,44 @@ public class PlayerJump : MonoBehaviour
         jumpBufferTimer = input.JumpPressed
             ? jumpBufferTime
             : jumpBufferTimer - Time.deltaTime;
+
+        coyoteTimer = Mathf.Max(coyoteTimer, 0f);
+        jumpBufferTimer = Mathf.Max(jumpBufferTimer, 0f);
     }
 
     private void HandleJump()
     {
-        if (jumpBufferTimer > 0f && (coyoteTimer > 0f || jumpCount < maxJumps))
+        if (jumpBufferTimer <= 0f) return;
+
+        if (movement.IsGrounded || coyoteTimer > 0f)
         {
             PerformJump();
-            jumpBufferTimer = 0f;
+            jumpsRemaining = maxAirJumps;
         }
+        else if (jumpsRemaining > 0)
+        {
+            PerformJump();
+            jumpsRemaining--;
+        }
+
+        jumpBufferTimer = 0f;
     }
 
     private void PerformJump()
     {
-        // Reset vertical velocity for consistent jumps
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-
-        jumpCount++;
         coyoteTimer = 0f;
-        movement.IsGrounded = false;
-        Debug.Log("isGrounded:" + movement.IsGrounded);
     }
+
 
     private void ApplyVariableJump()
     {
-        // Cut jump short if player lets go early
         if (!input.JumpHeld && rb.linearVelocity.y > 0)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
         }
 
-        // Faster falling (Mario style)
         if (rb.linearVelocity.y < 0)
         {
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
@@ -101,8 +110,7 @@ public class PlayerJump : MonoBehaviour
 
     private void ResetJumpsIfGrounded()
     {
-        if (movement.IsGrounded)
-            jumpCount = 0;
+        if (movement.IsGrounded) jumpsRemaining = maxAirJumps;
     }
 
     #endregion

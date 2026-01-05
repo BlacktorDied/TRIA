@@ -26,7 +26,7 @@ public class PlayerInputHandler : MonoBehaviour
         input.Player.Move.canceled += OnMove;
         input.Player.Jump.started += OnJumpStarted;
         input.Player.Jump.canceled += OnJumpCanceled;
-        //input.Player.Attack.started += OnAttackStarted;
+        input.Player.Attack.started += OnAttackStarted;
     }
 
     private void OnDisable()
@@ -35,7 +35,7 @@ public class PlayerInputHandler : MonoBehaviour
         input.Player.Move.canceled -= OnMove;
         input.Player.Jump.started -= OnJumpStarted;
         input.Player.Jump.canceled -= OnJumpCanceled;
-        //input.Player.Attack.started -= OnAttackStarted;
+        input.Player.Attack.started -= OnAttackStarted;
         input.Disable();
     }
 
@@ -46,7 +46,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnMove(InputAction.CallbackContext ctx) => MoveInput = ctx.ReadValue<Vector2>();
     private void OnJumpStarted(InputAction.CallbackContext ctx) { JumpPressed = true; JumpHeld = true; }
     private void OnJumpCanceled(InputAction.CallbackContext ctx) => JumpHeld = false;
-    //private void OnAttackStarted(InputAction.CallbackContext ctx) => AttackPressed = true;
+    private void OnAttackStarted(InputAction.CallbackContext ctx) => AttackPressed = true;
 
     #endregion
 
