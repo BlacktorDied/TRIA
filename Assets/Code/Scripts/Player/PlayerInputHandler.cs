@@ -11,6 +11,7 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector2 MoveInput { get; private set; }
     public bool JumpPressed { get; private set; }
     public bool JumpHeld { get; private set; }
+    public bool DashPressed { get; private set; }
     public bool AttackPressed { get; private set; }
 
     #endregion
@@ -26,6 +27,7 @@ public class PlayerInputHandler : MonoBehaviour
         input.Player.Move.canceled += OnMove;
         input.Player.Jump.started += OnJumpStarted;
         input.Player.Jump.canceled += OnJumpCanceled;
+        input.Player.Dash.started += OnDashStarted;
         input.Player.Attack.started += OnAttackStarted;
     }
 
@@ -35,6 +37,7 @@ public class PlayerInputHandler : MonoBehaviour
         input.Player.Move.canceled -= OnMove;
         input.Player.Jump.started -= OnJumpStarted;
         input.Player.Jump.canceled -= OnJumpCanceled;
+        input.Player.Dash.started -= OnDashStarted;
         input.Player.Attack.started -= OnAttackStarted;
         input.Disable();
     }
@@ -46,6 +49,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnMove(InputAction.CallbackContext ctx) => MoveInput = ctx.ReadValue<Vector2>();
     private void OnJumpStarted(InputAction.CallbackContext ctx) { JumpPressed = true; JumpHeld = true; }
     private void OnJumpCanceled(InputAction.CallbackContext ctx) => JumpHeld = false;
+    private void OnDashStarted(UnityEngine.InputSystem.InputAction.CallbackContext ctx) => DashPressed = true;
     private void OnAttackStarted(InputAction.CallbackContext ctx) => AttackPressed = true;
 
     #endregion
@@ -55,6 +59,7 @@ public class PlayerInputHandler : MonoBehaviour
         JumpPressed = false;
         JumpHeld = input.Player.Jump.IsPressed();
         AttackPressed = false;
+        DashPressed = false;
     }
 
 }

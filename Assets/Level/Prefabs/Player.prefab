@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 533176306548174916}
   - component: {fileID: 2474766692900610980}
   - component: {fileID: 3887388106439335295}
+  - component: {fileID: 7879010243976300678}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -267,7 +268,22 @@ MonoBehaviour:
   downAttackArea: {x: 3.5, y: 4.5}
   attackableLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
+--- !u!114 &7879010243976300678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931986404110018942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23a13c080d166474fb4c1d40a80e48ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDash
+  dashSpeed: 14
+  dashTime: 0.15
+  dashCooldown: 0.6
 --- !u!1 &3556078685273621019
 GameObject:
   m_ObjectHideFlags: 0

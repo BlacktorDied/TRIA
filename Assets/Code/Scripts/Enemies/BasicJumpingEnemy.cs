@@ -12,7 +12,6 @@ public class JumpingEnemy : Enemy
 
     private int i = 0;
     private float cooldownTimer;
-    private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
 
     #endregion
@@ -23,7 +22,6 @@ public class JumpingEnemy : Enemy
     {
         base.Start();
 
-        rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 

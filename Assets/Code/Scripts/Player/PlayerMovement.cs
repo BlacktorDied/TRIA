@@ -45,10 +45,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        PlayerDash dash = GetComponent<PlayerDash>();
+        if (dash != null && dash.IsDashing) return;
+
         float x = input.MoveInput.x;
         rb.linearVelocity = new Vector2(x * walkSpeed, rb.linearVelocity.y);
         Flip();
     }
+
 
     #endregion
 
