@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-public class JumpingEnemy : MonoBehaviour
+public class JumpingEnemy : Enemy
 {
     #region Variables
 
     [Header("Jump")]
-    [SerializeField] private float jumpHeight = 3f;         // Lower jump
-    [SerializeField] private float horizontalPower = 1.2f;  // Much smaller sideways force
+    [SerializeField] private float jumpHeight = 3f;
+    [SerializeField] private float horizontalPower = 1.2f;
     [SerializeField] private float jumpCooldown = 0.5f;
     public Transform[] points;
 
@@ -19,14 +19,18 @@ public class JumpingEnemy : MonoBehaviour
 
     #region Unity Methods
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         if (points.Length == 0) return;
 
         cooldownTimer -= Time.deltaTime;

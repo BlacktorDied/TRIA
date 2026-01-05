@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BasicFollowEnemy : MonoBehaviour
+public class BasicFollowEnemy : Enemy
 {
     #region Variables
 
@@ -23,8 +23,10 @@ public class BasicFollowEnemy : MonoBehaviour
 
     #region Unity Methods
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (points.Length == 0)
@@ -37,8 +39,10 @@ public class BasicFollowEnemy : MonoBehaviour
         }
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         if (points.Length == 0 || !player) return;
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);

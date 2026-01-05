@@ -1,45 +1,39 @@
 using UnityEngine;
 
-public class BasicEnemy : MonoBehaviour
+public class BasicEnemy : Enemy
 {
     #region Variables
-
-    [Header("Movement")]
+    [Header("Movement Settings")]
     [SerializeField] private float speed = 2f;
-    [SerializeField] private Transform[] points; // Array of patrol points
+    [SerializeField] private Transform[] points;
 
-    private int i = 0; // Current target point index
+    private int i = 0;
     private SpriteRenderer spriteRenderer;
-
     #endregion
 
     #region Unity Methods
 
-    void Start()
+    protected override void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        base.Start();
 
-        if (points.Length == 0)
-        {
-            Debug.LogWarning("No patrol points assigned for BasicEnemy!");
-        }
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (points.Length == 0) Debug.LogWarning("No patrol points assigned for BasicEnemy!");
     }
 
-    void Update()
+    protected override void Update()
     {
-        if (points.Length == 0) return; // Safety check
+        base.Update();
 
-        // Move towards the current target point
+        if (points.Length == 0) return;
+
         transform.position = Vector2.MoveTowards(transform.position, points[i].position, speed * Time.deltaTime);
-
-        // Flip sprite depending on movement direction
         spriteRenderer.flipX = (points[i].position.x - transform.position.x) < 0;
 
-        // Check if we reached the current point
         if (Vector2.Distance(transform.position, points[i].position) <= 0.25f)
         {
-            i++; // Move to next point
-            if (i >= points.Length) i = 0; // Loop back to first point
+            i++;
+            if (i >= points.Length) i = 0;
         }
     }
 

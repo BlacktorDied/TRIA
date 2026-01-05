@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class FollowEnemy : MonoBehaviour
+
+public class FollowEnemy : Enemy
 {
     #region Variables
 
@@ -18,9 +19,16 @@ public class FollowEnemy : MonoBehaviour
 
     #region Unity Methods
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         rb = GetComponent<Rigidbody2D>();
+    }
+
+    protected override void Update()
+    {
+        base.Update();
     }
 
     void FixedUpdate()
