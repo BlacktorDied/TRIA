@@ -14,12 +14,12 @@ public class PlayerMovement : MonoBehaviour
     [Header("Ground Check Settings")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
-
     [SerializeField] private Vector2 boxSize = new Vector2(0.8f, 0.05f);
     [SerializeField] private float castDistance = 0.1f;
 
     private Rigidbody2D rb;
     private PlayerInputHandler input;
+    private PlayerAudio playerAudio;
 
     #endregion
 
@@ -29,38 +29,53 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInputHandler>();
+        playerAudio = GetComponent<PlayerAudio>();
     }
 
     private void Update()
     {
         IsGrounded = Physics2D.BoxCast(
-            groundCheck.position,  // The center point of the box (set by your child Transform)
-            boxSize,               // The width and height of the box (e.g., 0.8 width, 0.05 height)
-            0f,                    // Angle of the box (0 means no rotation)
-            Vector2.down,          // Direction of the cast (downwards)
-            castDistance,          // How far the box is projected
-            groundLayer            // Only checks colliders on this layer
-        ).collider != null;        // The BoxCast returns RaycastHit2D; check if a collider was hit
+            groundCheck.position,
+            boxSize,
+            0f,
+            Vector2.down,
+            castDistance,
+            groundLayer
+        ).collider != null;
     }
-
     private void FixedUpdate()
     {
         PlayerDash dash = GetComponent<PlayerDash>();
-        if (dash != null && dash.IsDashing) return;
+        if (dash != null && dash.IsDashing)
+        {
+            playerAudio?.StopFootsteps();
+            return;
+        }
 
         float x = input.MoveInput.x;
         rb.linearVelocity = new Vector2(x * walkSpeed, rb.linearVelocity.y);
-        Flip();
-    }
 
+        HandleFootsteps(x);
+        Flip(x);
+    }
 
     #endregion
 
-    void Flip()
+    private void HandleFootsteps(float xInput)
     {
-        if (input.MoveInput.x > 0)
+        bool isWalking = Mathf.Abs(xInput) > 0.1f && IsGrounded;
+
+        if (playerAudio == null) return;
+
+        if (isWalking) playerAudio.StartFootsteps();
+        else playerAudio.StopFootsteps();
+    }
+
+    private void Flip(float xInput)
+    {
+        if (xInput > 0)
             transform.localScale = new Vector3(1f, 0.875f, 1f);
-        else if (input.MoveInput.x < 0)
+        else if (xInput < 0)
             transform.localScale = new Vector3(-1f, 0.875f, 1f);
     }
 
@@ -69,7 +84,10 @@ public class PlayerMovement : MonoBehaviour
         if (groundCheck != null)
         {
             Gizmos.color = IsGrounded ? Color.green : Color.red;
-            Gizmos.DrawWireCube((Vector2)groundCheck.position + Vector2.down * castDistance, boxSize);
+            Gizmos.DrawWireCube(
+                (Vector2)groundCheck.position + Vector2.down * castDistance,
+                boxSize
+            );
         }
     }
 }
