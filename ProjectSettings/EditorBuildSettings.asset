@@ -5,9 +5,48 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Level/Scenes/GameScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 1/Basement2.unity
+    guid: 2899d82870ff04141ba4ced981ac30d8
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 1/Basement1.unity
+    guid: 6662bcb610cb11b4c8e0068fb97730db
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 1/Basement3.unity
+    guid: b07f91d73b69b8347bcccbf8b7b1ea24
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 1/Basement4.unity
+    guid: ffdec83b02e4e04448729ed55b2718fa
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 1/Basement5.unity
+    guid: 4b3b58760be2b654f8718277b6c1437f
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 1/Basement6.unity
+    guid: 6ee3f75363c0d0042b335d6bcba47546
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 1/Basement7.unity
+    guid: 6783ae3be02b3404fb9d1d0d51768557
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 2/Assembly2.unity
+    guid: 4f1d40b6c1e1d724d9dd2f2929b20e7c
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 2/Assembly3.unity
+    guid: e36cb53a3db763c48b1fcd4008fe8111
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 2/Assembly1.unity
+    guid: 950c416717ebef94ca4d6e7028c62510
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 2/Assembly4.unity
+    guid: 7e08261dfcdf341419608a4658e42d99
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 2/Assembly5.unity
+    guid: d2d9482969db65747a9d01667884dd3d
+  - enabled: 1
+    path: Assets/Level/Scenes/Location 2/Assembly6.unity
+    guid: 675e13d36614ae94aa0105ad7c550c68
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
