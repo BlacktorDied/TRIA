@@ -462,6 +462,10 @@ PrefabInstance:
       value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 533176306548174916, guid: e0f3ee39cdbfbe743bb35a370ce19d18, type: 3}
+      propertyPath: walkSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 533176306548174916, guid: e0f3ee39cdbfbe743bb35a370ce19d18, type: 3}
       propertyPath: groundCheck
       value: 
       objectReference: {fileID: 27276902}
@@ -544,6 +548,14 @@ PrefabInstance:
     - target: {fileID: 7771980035192307371, guid: e0f3ee39cdbfbe743bb35a370ce19d18, type: 3}
       propertyPath: m_GravityScale
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771980035192307371, guid: e0f3ee39cdbfbe743bb35a370ce19d18, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7879010243976300678, guid: e0f3ee39cdbfbe743bb35a370ce19d18, type: 3}
+      propertyPath: dashSpeed
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

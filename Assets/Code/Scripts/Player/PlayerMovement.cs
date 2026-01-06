@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
 
         float x = input.MoveInput.x;
         rb.linearVelocity = new Vector2(x * walkSpeed, rb.linearVelocity.y);
-        Flip();
+        ///Flip();
     }
 
 
