@@ -2,7 +2,7 @@
 
 [RequireComponent(typeof(Rigidbody2D))]
 
-public class FollowEnemy : Enemy
+public class BasicFlyingEnemy : Enemy
 {
     #region Variables
 
