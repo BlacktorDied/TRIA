@@ -25,6 +25,7 @@ public class PlayerJump : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerInputHandler input;
     private PlayerMovement movement;
+    private Animator anim;
 
 
     #endregion
@@ -36,6 +37,7 @@ public class PlayerJump : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInputHandler>();
         movement = GetComponent<PlayerMovement>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -106,6 +108,8 @@ public class PlayerJump : MonoBehaviour
         {
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
+
+        anim.SetBool("isJumping", !movement.IsGrounded);
     }
 
     private void ResetJumpsIfGrounded()
