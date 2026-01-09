@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     private PlayerInputHandler input;
+    private PlayerDash dash;
+    private Animator anim;
 
     #endregion
 
@@ -29,6 +31,8 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInputHandler>();
+        dash = GetComponent<PlayerDash>();
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -45,16 +49,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        PlayerDash dash = GetComponent<PlayerDash>();
         if (dash != null && dash.IsDashing) return;
 
-        float x = input.MoveInput.x;
-        rb.linearVelocity = new Vector2(x * walkSpeed, rb.linearVelocity.y);
-        ///Flip();
+        Move();
     }
 
-
     #endregion
+
+    void Move()
+    {
+        rb.linearVelocity = new Vector2(input.MoveInput.x * walkSpeed, rb.linearVelocity.y);
+        Flip();
+        anim.SetBool("isWalking", rb.linearVelocity.x != 0 && IsGrounded);
+    }
 
     void Flip()
     {
