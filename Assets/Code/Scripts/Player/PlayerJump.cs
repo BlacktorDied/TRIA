@@ -26,6 +26,8 @@ public class PlayerJump : MonoBehaviour
     private PlayerInputHandler input;
     private PlayerMovement movement;
     private PlayerAudio playerAudio;
+    private Animator anim;
+
 
     #endregion
 
@@ -37,6 +39,7 @@ public class PlayerJump : MonoBehaviour
         input = GetComponent<PlayerInputHandler>();
         movement = GetComponent<PlayerMovement>();
         playerAudio = GetComponent<PlayerAudio>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -108,6 +111,8 @@ public class PlayerJump : MonoBehaviour
         {
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
+
+        anim.SetBool("isJumping", !movement.IsGrounded);
     }
 
     private void ResetJumpsIfGrounded()

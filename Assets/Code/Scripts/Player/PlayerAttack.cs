@@ -14,6 +14,7 @@ public class PlayerAttack : MonoBehaviour
     private PlayerInputHandler input;
     private PlayerMovement movement;
     private PlayerAudio playerAudio;
+    private Animator anim;
 
     private float timeSinceAttack;
 
@@ -26,6 +27,7 @@ public class PlayerAttack : MonoBehaviour
         input = GetComponent<PlayerInputHandler>();
         movement = GetComponent<PlayerMovement>();
         playerAudio = GetComponent<PlayerAudio>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -49,7 +51,7 @@ public class PlayerAttack : MonoBehaviour
         {
             Hit(upAttackPoint, upAttackArea);
             Debug.Log("Up Attack!");
-            // anim.SetTrigger("AttackUp");
+             //anim.SetTrigger("AttackUp");
         }
         else if (input.MoveInput.y < -0.5 && !movement.IsGrounded)
         {
@@ -61,7 +63,7 @@ public class PlayerAttack : MonoBehaviour
         {
             Hit(sideAttackPoint, sideAttackArea);
             Debug.Log("Side Attack!");
-            // anim.SetTrigger("AttackSide");
+             anim.SetTrigger("Attacking");
         }
     }
 

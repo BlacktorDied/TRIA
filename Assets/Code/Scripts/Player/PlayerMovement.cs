@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerInputHandler input;
     private PlayerAudio playerAudio;
+    private PlayerDash dash;
+    private Animator anim;
 
     #endregion
 
@@ -30,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInputHandler>();
         playerAudio = GetComponent<PlayerAudio>();
+        dash = GetComponent<PlayerDash>();
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -61,7 +65,20 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
-    private void HandleFootsteps(float xInput)
+    private void HandleFootsteps(float xInput) {
+        if (dash != null && dash.IsDashing) return;
+
+        Move();
+    }
+
+    void Move()
+    {
+        rb.linearVelocity = new Vector2(input.MoveInput.x * walkSpeed, rb.linearVelocity.y);
+        Flip();
+        anim.SetBool("isWalking", rb.linearVelocity.x != 0 && IsGrounded);
+    }
+
+    void Flip()
     {
         bool isWalking = Mathf.Abs(xInput) > 0.1f && IsGrounded;
 
