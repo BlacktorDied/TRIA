@@ -21,15 +21,14 @@ public class JumpingEnemy : Enemy
     protected override void Start()
     {
         base.Start();
-
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    protected override void Update()
+    // ✅ Update is now LOCAL, not override
+    private void Update()
     {
-        base.Update();
-
-        if (points.Length == 0) return;
+        if (isDead) return;
+        if (points == null || points.Length == 0) return;
 
         cooldownTimer -= Time.deltaTime;
         Vector2 target = points[i].position;
@@ -58,13 +57,12 @@ public class JumpingEnemy : Enemy
 
     #region Jump Logic  
 
-    void JumpToward(Vector2 target)
+    private void JumpToward(Vector2 target)
     {
         float distX = target.x - transform.position.x;
 
         // Reduce force when close so it doesn't overshoot
         float forceMultiplier = Mathf.Clamp(Mathf.Abs(distX), 0.2f, 1f);
-
         float vx = Mathf.Clamp(distX * horizontalPower * forceMultiplier, -3f, 3f);
 
         rb.linearVelocity = new Vector2(vx, jumpHeight);

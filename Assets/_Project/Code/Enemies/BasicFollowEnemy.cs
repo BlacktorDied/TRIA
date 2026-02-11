@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BasicFollowEnemy : Enemy
 {
@@ -39,10 +39,10 @@ public class BasicFollowEnemy : Enemy
         }
     }
 
-    protected override void Update()
+    // ✅ Local Update, no override
+    private void Update()
     {
-        base.Update();
-
+        if (isDead) return;
         if (points.Length == 0 || !player) return;
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
@@ -62,7 +62,6 @@ public class BasicFollowEnemy : Enemy
             if (Vector2.Distance(transform.position, patrolTarget) < 0.25f)
             {
                 i++;
-
                 if (i >= points.Length) i = 0;
 
                 patrolTarget = points[i].position;
@@ -85,7 +84,7 @@ public class BasicFollowEnemy : Enemy
 
     #endregion
 
-    void MoveTowards(Vector3 target)
+    private void MoveTowards(Vector3 target)
     {
         transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
         spriteRenderer.flipX = (target.x - transform.position.x) < 0;

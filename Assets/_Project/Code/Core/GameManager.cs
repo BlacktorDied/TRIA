@@ -1,43 +1,54 @@
 using System;
+using System.Collections.Generic; // Required for HashSet
 using UnityEngine;
 
 namespace TRIA.Core
 {
     public class GameManager : MonoBehaviour
     {
-        // Inside GameManager.cs
-        public static event Action OnFadeOutRequested;
-        public static event Action OnFadeInRequested;
-
-        // Add these helper methods to resolve the "never used" warning:
-        public static void TriggerFadeOut() => OnFadeOutRequested?.Invoke();
-
-        public static void TriggerFadeIn() => OnFadeInRequested?.Invoke();
-
         public static GameManager Instance { get; private set; }
 
-        public GameState CurrentState { get; private set; }
-
-        // Other scripts will listen to this event to know when the game pauses/resumes
+        // --- CORE EVENTS ---
+        public static event Action OnFadeOutRequested;
+        public static event Action OnFadeInRequested;
         public static event Action<GameState> OnGameStateChanged;
+
+        // --- PERSISTENT PLAYER DATA (From GameManager2) ---
+        [Header("Abilities")]
+        public bool dashUnlocked = false;
+
+        [Header("Stats")]
+        public float playerAttack = 1f;
+        public int playerMaxHealth = 3;
+
+        [Header("Fragment Progress")]
+        public int attackFragments = 0;
+        public int healthFragments = 0;
+
+        [Header("World State")]
+        public string lastEntryID;
+
+        // HashSet is used because checking "Contains" is much faster than a List
+        public HashSet<string> collectedCollectibles = new HashSet<string>();
+
+        // --- STATE MANAGEMENT ---
+        public GameState CurrentState { get; private set; }
 
         private void Awake()
         {
-            // Standard Singleton setup to ensure only one GameManager exists
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
                 return;
             }
-
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
         {
+            // Set initial state based on scene
             string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-
             if (currentScene == "MainMenu")
                 ChangeState(GameState.MainMenu);
             else
@@ -51,25 +62,21 @@ namespace TRIA.Core
 
             CurrentState = newState;
 
-            // Handle specific logic based on the new state
+            // Handle Time and Physics
             switch (CurrentState)
             {
                 case GameState.MainMenu:
-                    Time.timeScale = 1f;
-                    break;
                 case GameState.Gameplay:
                     Time.timeScale = 1f;
                     break;
                 case GameState.Pause:
-                    Time.timeScale = 0f; // Freezes physics and time-based movement
+                    Time.timeScale = 0f; // Freeze the world
                     break;
             }
 
-            // Broadcast the state change to the rest of the game
             OnGameStateChanged?.Invoke(newState);
         }
 
-        // Controls global game flow (pause, quit)
         public void TogglePause()
         {
             if (CurrentState == GameState.Gameplay)
@@ -78,9 +85,25 @@ namespace TRIA.Core
                 ChangeState(GameState.Gameplay);
         }
 
+        // --- HELPER METHODS ---
+        public static void TriggerFadeOut() => OnFadeOutRequested?.Invoke();
+
+        public static void TriggerFadeIn() => OnFadeInRequested?.Invoke();
+
+        public void ResetProgress()
+        {
+            dashUnlocked = false;
+            playerAttack = 1f;
+            playerMaxHealth = 3;
+            attackFragments = 0;
+            healthFragments = 0;
+            collectedCollectibles.Clear();
+            Debug.Log("Game progress reset!");
+        }
+
         public void QuitGame()
         {
-            Debug.Log("Quitting Game...");
+            Debug.Log("Quitting Application...");
             Application.Quit();
         }
     }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BasicEnemy : Enemy
 {
@@ -18,13 +18,14 @@ public class BasicEnemy : Enemy
         base.Start();
 
         spriteRenderer = GetComponent<SpriteRenderer>();
-        if (points.Length == 0) Debug.LogWarning("No patrol points assigned for BasicEnemy!");
+        if (points.Length == 0)
+            Debug.LogWarning("No patrol points assigned for BasicEnemy!");
     }
 
-    protected override void Update()
+    // ✅ Local Update, no override
+    private void Update()
     {
-        base.Update();
-
+        if (isDead) return;
         if (points.Length == 0) return;
 
         transform.position = Vector2.MoveTowards(transform.position, points[i].position, speed * Time.deltaTime);
