@@ -1,12 +1,9 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-
 public class PlayerMovement : MonoBehaviour
 {
     public bool IsGrounded;
-
-    #region Variables
 
     [Header("Movement Settings")]
     [SerializeField] private float walkSpeed = 5f;
@@ -20,16 +17,16 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerInputHandler input;
     private PlayerAudio playerAudio;
-
-    #endregion
-
-    #region Unity Methods
+    private PlayerDash dash;
+    private Animator anim;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInputHandler>();
         playerAudio = GetComponent<PlayerAudio>();
+        dash = GetComponent<PlayerDash>();
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -43,29 +40,36 @@ public class PlayerMovement : MonoBehaviour
             groundLayer
         ).collider != null;
     }
+
     private void FixedUpdate()
     {
-        PlayerDash dash = GetComponent<PlayerDash>();
         if (dash != null && dash.IsDashing)
         {
             playerAudio?.StopFootsteps();
+            anim?.SetBool("isWalking", false);
             return;
         }
 
         float x = input.MoveInput.x;
+
+        // Move
         rb.linearVelocity = new Vector2(x * walkSpeed, rb.linearVelocity.y);
 
+        // Anim
+        anim?.SetBool("isWalking", Mathf.Abs(x) > 0.1f && IsGrounded);
+
+        // Footsteps
         HandleFootsteps(x);
+
+        // Facing direction
         Flip(x);
     }
 
-    #endregion
-
     private void HandleFootsteps(float xInput)
     {
-        bool isWalking = Mathf.Abs(xInput) > 0.1f && IsGrounded;
-
         if (playerAudio == null) return;
+
+        bool isWalking = Mathf.Abs(xInput) > 0.1f && IsGrounded;
 
         if (isWalking) playerAudio.StartFootsteps();
         else playerAudio.StopFootsteps();
@@ -73,9 +77,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Flip(float xInput)
     {
-        if (xInput > 0)
+        if (xInput > 0f)
             transform.localScale = new Vector3(1f, 0.875f, 1f);
-        else if (xInput < 0)
+        else if (xInput < 0f)
             transform.localScale = new Vector3(-1f, 0.875f, 1f);
     }
 
