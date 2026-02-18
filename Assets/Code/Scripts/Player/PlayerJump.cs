@@ -25,7 +25,7 @@ public class PlayerJump : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerInputHandler input;
     private PlayerMovement movement;
-
+    private PlayerAudio playerAudio;
 
     #endregion
 
@@ -36,6 +36,7 @@ public class PlayerJump : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInputHandler>();
         movement = GetComponent<PlayerMovement>();
+        playerAudio = GetComponent<PlayerAudio>();
     }
 
     void Update()
@@ -49,7 +50,6 @@ public class PlayerJump : MonoBehaviour
         ApplyVariableJump();
         ResetJumpsIfGrounded();
     }
-
 
     #endregion
 
@@ -92,6 +92,8 @@ public class PlayerJump : MonoBehaviour
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         coyoteTimer = 0f;
+
+        playerAudio?.PlayJump();
     }
 
 
