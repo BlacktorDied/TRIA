@@ -4,7 +4,10 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Damage
+  - Enemy
+  - TransitionZone
+  - SavePoint
+  - Hazard
   layers:
   - Default
   - TransparentFX
@@ -12,10 +15,10 @@ TagManager:
   - Ground
   - Water
   - UI
-  - Attackable
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - OneWayPlatform
+  - Projectile
   - 
   - 
   - 
