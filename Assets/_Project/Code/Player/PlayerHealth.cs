@@ -1,136 +1,91 @@
 using System.Collections;
+using TRIA.Core;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+namespace TRIA.Player
 {
-    [Header("Health Settings")]
-    [SerializeField]
-    public int maxHealthPoints = 3;
-
-    [SerializeField]
-    public int healthPoints;
-
-    [Header("Death Settings")]
-    [SerializeField]
-    private float deathDelay = 2f;
-
-    private bool isDead = false;
-    private SpriteRenderer spriteRenderer;
-    private MonoBehaviour[] playerScripts;
-    private Vector2 respawnPosition;
-
-    private void Awake()
+    public class PlayerHealth : MonoBehaviour, IDamageable
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        playerScripts = GetComponents<MonoBehaviour>();
+        [Header("Health Stats")]
+        [SerializeField]
+        private float maxHealthPoints = 3f;
 
-        // Load persistent health if GameManager2 exists
-        if (GameManager2.Instance != null)
+        [SerializeField]
+        private float currentHealth;
+
+        [Header("Death Settings")]
+        [SerializeField]
+        private float deathDelay = 1.5f;
+
+        public bool IsDead { get; private set; }
+
+        private SpriteRenderer _sprite;
+        private Rigidbody2D _rb;
+        private PlayerController _controller;
+        private Vector2 _respawnPosition;
+
+        private void Awake()
         {
-            maxHealthPoints = GameManager2.Instance.playerMaxHealth;
+            _sprite = GetComponent<SpriteRenderer>();
+            _rb = GetComponent<Rigidbody2D>();
+            _controller = GetComponent<PlayerController>();
+
+            if (GameManager.Instance != null)
+                maxHealthPoints = GameManager.Instance.playerMaxHealth;
+
+            currentHealth = maxHealthPoints;
+            _respawnPosition = transform.position;
         }
 
-        healthPoints = maxHealthPoints;
-
-        respawnPosition = transform.position;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        if (isDead)
-            return;
-
-        healthPoints -= damage;
-        healthPoints = Mathf.Clamp(healthPoints, 0, maxHealthPoints);
-
-        Debug.Log($"Player took {damage} damage! HP: {healthPoints}/{maxHealthPoints}");
-
-        if (healthPoints <= 0)
-            Die();
-    }
-
-    public void Heal(int amount)
-    {
-        if (isDead)
-            return;
-
-        healthPoints += amount;
-        healthPoints = Mathf.Clamp(healthPoints, 0, maxHealthPoints);
-
-        Debug.Log($"Player healed {amount} HP! HP: {healthPoints}/{maxHealthPoints}");
-    }
-
-    public void IncreaseMaxHealth(int amount)
-    {
-        maxHealthPoints += amount;
-
-        // Prevent weird values
-        maxHealthPoints = Mathf.Max(1, maxHealthPoints);
-
-        // Heal to full when max health increases
-        healthPoints = maxHealthPoints;
-
-        if (GameManager2.Instance != null)
+        public void TakeDamage(float damage)
         {
-            GameManager2.Instance.playerMaxHealth = maxHealthPoints;
+            if (IsDead)
+                return;
+
+            currentHealth -= damage;
+            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealthPoints);
+
+            Debug.Log($"Player Health: {currentHealth}/{maxHealthPoints}");
+
+            if (currentHealth <= 0)
+                Die();
         }
 
-        Debug.Log($"Max Health increased! Now: {healthPoints}/{maxHealthPoints}");
-    }
-
-    public void SetCheckpoint(Vector2 newPosition)
-    {
-        respawnPosition = newPosition;
-        Debug.Log($"Checkpoint updated: {respawnPosition}");
-    }
-
-    private void Die()
-    {
-        if (isDead)
-            return;
-        isDead = true;
-
-        Debug.Log("Player has died!");
-
-        if (spriteRenderer != null)
-            spriteRenderer.enabled = false;
-
-        if (playerScripts != null)
+        public void Heal(float amount)
         {
-            foreach (MonoBehaviour script in playerScripts)
-            {
-                if (script != null && script != this)
-                    script.enabled = false;
-            }
+            currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealthPoints);
         }
 
-        StartCoroutine(RespawnAtCheckpoint());
-    }
-
-    private IEnumerator RespawnAtCheckpoint()
-    {
-        yield return new WaitForSeconds(deathDelay);
-
-        transform.position = respawnPosition;
-
-        // Restore full health
-        healthPoints = maxHealthPoints;
-        healthPoints = Mathf.Clamp(healthPoints, 0, maxHealthPoints);
-
-        isDead = false;
-
-        if (spriteRenderer != null)
-            spriteRenderer.enabled = true;
-
-        if (playerScripts != null)
+        // --- ADD THIS METHOD TO FIX THE ERROR ---
+        public void IncreaseMaxHealth(float amount)
         {
-            foreach (MonoBehaviour script in playerScripts)
-            {
-                if (script != null && script != this)
-                    script.enabled = true;
-            }
+            maxHealthPoints += amount;
+
+            // Optionally heal the player by the same amount so the new heart isn't empty
+            currentHealth += amount;
+
+            Debug.Log($"Max Health Increased! New Max: {maxHealthPoints}");
         }
 
-        Debug.Log("Player respawned at checkpoint!");
+        private void Die()
+        {
+            if (IsDead)
+                return;
+            IsDead = true;
+
+            GameManager.TriggerFadeOut();
+            StartCoroutine(RespawnRoutine());
+        }
+
+        private IEnumerator RespawnRoutine()
+        {
+            yield return new WaitForSecondsRealtime(deathDelay);
+            transform.position = _respawnPosition;
+            currentHealth = maxHealthPoints;
+            IsDead = false;
+            GameManager.TriggerFadeIn();
+        }
+
+        public void SetCheckpoint(Vector2 position) => _respawnPosition = position;
     }
 }

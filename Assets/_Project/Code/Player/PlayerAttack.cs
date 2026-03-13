@@ -12,9 +12,9 @@ namespace TRIA.Player
         [SerializeField]
         private float attackDelay = 0.3f;
 
-        [Header("Hitbox (No Child Object)")]
+        [Header("Hitbox")]
         [SerializeField]
-        private Vector2 attackOffset = new Vector2(1f, 0f); // How far in front of player
+        private Vector2 attackOffset = new Vector2(1.2f, 0f);
 
         [SerializeField]
         private Vector2 attackSize = new Vector2(1.5f, 1.5f);
@@ -24,12 +24,14 @@ namespace TRIA.Player
 
         private Animator _anim;
         private SpriteRenderer _sprite;
+        private PlayerAudio _audio;
         private float _timeSinceAttack;
 
         private void Awake()
         {
             _anim = GetComponent<Animator>();
             _sprite = GetComponent<SpriteRenderer>();
+            _audio = GetComponent<PlayerAudio>();
 
             if (GameManager.Instance != null)
                 damage = GameManager.Instance.playerAttack;
@@ -37,24 +39,30 @@ namespace TRIA.Player
 
         private void Update() => _timeSinceAttack += Time.deltaTime;
 
-        // Called by Player Input (SendMessages)
         public void OnAttack()
         {
-            if (GameManager.Instance.CurrentState == GameState.Pause)
+            if (
+                GameManager.Instance != null
+                && GameManager.Instance.CurrentState != GameState.Gameplay
+            )
                 return;
             if (_timeSinceAttack < attackDelay)
                 return;
 
+            PerformAttack();
+        }
+
+        private void PerformAttack()
+        {
             _timeSinceAttack = 0f;
             _anim?.SetTrigger("Attacking");
+            _audio?.PlayAttack();
 
-            // CALCULATE HITBOX CENTER
-            // We flip the X offset based on which way the sprite is facing
             float direction = _sprite.flipX ? -1f : 1f;
-            Vector2 finalOffset = new Vector2(attackOffset.x * direction, attackOffset.y);
-            Vector2 attackCenter = (Vector2)transform.position + finalOffset;
+            Vector2 attackCenter =
+                (Vector2)transform.position
+                + new Vector2(attackOffset.x * direction, attackOffset.y);
 
-            // DETECT HITS
             Collider2D[] hits = Physics2D.OverlapBoxAll(
                 attackCenter,
                 attackSize,
@@ -64,30 +72,27 @@ namespace TRIA.Player
 
             foreach (Collider2D hit in hits)
             {
-                if (hit.gameObject == gameObject)
-                    continue;
-
-                // Example: hit.GetComponent<Enemy>()?.TakeDamage(damage);
-                Debug.Log($"Hit {hit.name} for {damage} damage!");
+                // Look for the interface in Core
+                IDamageable target = hit.GetComponent<IDamageable>();
+                if (target != null)
+                {
+                    target.TakeDamage(damage);
+                }
             }
         }
 
-        public void IncreaseAttack(float amount)
-        {
-            damage += amount;
-        }
+        public void IncreaseAttack(float amount) => damage += amount;
 
-        // Draw the hitbox in the editor so you can see it without a child object
         private void OnDrawGizmosSelected()
         {
             if (_sprite == null)
                 _sprite = GetComponent<SpriteRenderer>();
-            float direction = (_sprite != null && _sprite.flipX) ? -1f : 1f;
-            Vector3 pos =
-                transform.position + new Vector3(attackOffset.x * direction, attackOffset.y, 0);
-
+            float dir = (_sprite != null && _sprite.flipX) ? -1f : 1f;
             Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(pos, attackSize);
+            Gizmos.DrawWireCube(
+                transform.position + new Vector3(attackOffset.x * dir, attackOffset.y, 0),
+                attackSize
+            );
         }
     }
 }

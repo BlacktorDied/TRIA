@@ -1,5 +1,6 @@
 using TRIA.Core;
 using TRIA.Core.Constants;
+using TRIA.Player;
 using UnityEngine;
 
 namespace TRIA.Items
@@ -7,8 +8,9 @@ namespace TRIA.Items
     public class DashUnlockCollectible : MonoBehaviour
     {
         [Header("Identity")]
-        [Tooltip("Unique ID for this ability unlock (e.g., 'Unlock_Dash_Ability')")]
-        public string collectibleID = "Ability_Dash";
+        [Tooltip("Unique ID for this ability unlock (e.g., 'Ability_Dash')")]
+        [SerializeField]
+        private string collectibleID = "Ability_Dash";
 
         private void Start()
         {
@@ -30,13 +32,26 @@ namespace TRIA.Items
             if (!other.CompareTag(Tags.Player))
                 return;
 
-            // Unlock ability globally
-            GameManager.Instance.dashUnlocked = true;
-            GameManager.Instance.collectedCollectibles.Add(collectibleID);
+            // 1. Tell the Player locally that they can now dash
+            PlayerAbilityHandler abilities = other.GetComponent<PlayerAbilityHandler>();
+            if (abilities != null)
+            {
+                abilities.UnlockAbility(AbilityType.Dash);
+            }
+
+            // 2. Tell the GameManager globally so it can be saved
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.dashUnlocked = true;
+                if (!GameManager.Instance.collectedCollectibles.Contains(collectibleID))
+                {
+                    GameManager.Instance.collectedCollectibles.Add(collectibleID);
+                }
+            }
 
             Debug.Log("<color=cyan><b>DASH ABILITY UNLOCKED!</b></color>");
 
-            // Optional: Trigger a specific UI popup or tutorial here
+            // Optional: Instantiate a "Pickup Effect" prefab here
 
             Destroy(gameObject);
         }

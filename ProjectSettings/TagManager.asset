@@ -8,6 +8,7 @@ TagManager:
   - TransitionZone
   - SavePoint
   - Hazard
+  - Damage
   layers:
   - Default
   - TransparentFX
