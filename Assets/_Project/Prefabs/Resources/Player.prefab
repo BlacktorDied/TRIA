@@ -265,7 +265,7 @@ MonoBehaviour:
   dashSpeed: 20
   dashDuration: 0.2
   dashCooldown: 0.6
-  knockbackDuration: 0.2
+  knockbackDuration: 0.3
   boxSize: {x: 0.8, y: 0.05}
   groundSkin: 0.05
   groundLayer:

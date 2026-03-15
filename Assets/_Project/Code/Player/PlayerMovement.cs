@@ -255,9 +255,11 @@ namespace TRIA.Player
         {
             if (IsDashing)
                 return;
+
             IsKnockedBack = true;
             _knockbackTimer = knockbackDuration;
-            _rb.linearVelocity = Vector2.zero;
+
+            _rb.linearVelocity = Vector2.zero; // reset velocity
             _rb.AddForce(direction.normalized * force, ForceMode2D.Impulse);
         }
 

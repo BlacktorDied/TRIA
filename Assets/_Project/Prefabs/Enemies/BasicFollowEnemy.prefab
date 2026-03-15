@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 960856a59a3eca947a2cd308ca77356b, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: ae7ae28ac6b616a4a84f54c68fecf37f, type: 3}
   m_Color: {r: 0, g: 0.433208, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -185,6 +185,14 @@ MonoBehaviour:
   health: 0
   maxHealth: 3
   contactDamage: 1
+  knockbackDistance: 2
+  knockbackUpDistance: 0
+  knockbackDuration: 0.2
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  healthPickupPrefab: {fileID: 713807262270964672, guid: 1ddb335bd7990bb4e92ffe29a4d3c75b, type: 3}
+  healthDropChance: 0.25
   patrolSpeed: 2.5
   chaseSpeed: 4.5
   patrolDistance: 5

@@ -12,7 +12,7 @@ namespace TRIA.Enemies
         private float detectionRange = 8f;
 
         [SerializeField]
-        private float stopChasingRange = 12f; // Slightly larger to prevent "flickering" aggro
+        private float stopChasingRange = 12f;
 
         [Header("Movement")]
         [SerializeField]
@@ -20,6 +20,9 @@ namespace TRIA.Enemies
 
         [SerializeField]
         private float acceleration = 5f;
+
+        [SerializeField]
+        private float slowDownRadius = 3f; // Distance where enemy starts slowing down
 
         [Header("Idle Roaming")]
         [SerializeField]
@@ -44,9 +47,9 @@ namespace TRIA.Enemies
             _startPos = transform.position;
             _roamTarget = GetNewRoamPoint();
 
-            // PHYSICS SETUP: Crucial for wall collision
+            // PHYSICS SETUP
             rb.gravityScale = 0f;
-            rb.bodyType = RigidbodyType2D.Dynamic; // Must be Dynamic to collide with walls
+            rb.bodyType = RigidbodyType2D.Dynamic;
             rb.freezeRotation = true;
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         }
@@ -72,7 +75,7 @@ namespace TRIA.Enemies
             else if (_isChasing && distanceToPlayer > stopChasingRange)
             {
                 _isChasing = false;
-                _startPos = transform.position; // Reset roam anchor to current position
+                _startPos = transform.position;
                 _roamTarget = GetNewRoamPoint();
             }
 
@@ -90,10 +93,23 @@ namespace TRIA.Enemies
 
         private void ChasePlayer()
         {
-            Vector2 direction = (playerTransform.position - transform.position).normalized;
+            Vector2 toPlayer = playerTransform.position - transform.position;
+            float distance = toPlayer.magnitude;
 
-            // Using velocity smoothly instead of snapping position (fixes wall clipping)
-            Vector2 targetVelocity = direction * moveSpeed;
+            Vector2 direction = toPlayer.normalized;
+
+            // Speed multiplier based on distance
+            float speedMultiplier = 1f;
+
+            if (distance < slowDownRadius)
+            {
+                speedMultiplier = distance / slowDownRadius;
+            }
+
+            float finalSpeed = moveSpeed * speedMultiplier;
+
+            Vector2 targetVelocity = direction * finalSpeed;
+
             rb.linearVelocity = Vector2.Lerp(
                 rb.linearVelocity,
                 targetVelocity,
@@ -112,6 +128,7 @@ namespace TRIA.Enemies
                     Vector2.zero,
                     Time.fixedDeltaTime * acceleration
                 );
+
                 _roamTimer += Time.fixedDeltaTime;
 
                 if (_roamTimer >= waitTimeAtPoint)
@@ -123,6 +140,7 @@ namespace TRIA.Enemies
             else
             {
                 Vector2 direction = (_roamTarget - (Vector2)transform.position).normalized;
+
                 rb.linearVelocity = Vector2.Lerp(
                     rb.linearVelocity,
                     direction * roamSpeed,
@@ -138,7 +156,6 @@ namespace TRIA.Enemies
 
         private void FlipSprite()
         {
-            // Look at velocity direction instead of just player position
             if (rb.linearVelocity.x > 0.1f)
                 _sprite.flipX = false;
             else if (rb.linearVelocity.x < -0.1f)
@@ -147,13 +164,17 @@ namespace TRIA.Enemies
 
         private void OnDrawGizmosSelected()
         {
-            // Visual aids for the editor
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, detectionRange);
 
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(transform.position, slowDownRadius);
+
             Gizmos.color = Color.yellow;
+
             if (!Application.isPlaying)
                 _startPos = transform.position;
+
             Gizmos.DrawWireSphere(_startPos, roamRadius);
         }
     }

@@ -1,6 +1,8 @@
 using System;
-using System.Collections.Generic; // Required for HashSet
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace TRIA.Core
 {
@@ -13,7 +15,7 @@ namespace TRIA.Core
         public static event Action OnFadeInRequested;
         public static event Action<GameState> OnGameStateChanged;
 
-        // --- PERSISTENT PLAYER DATA (From GameManager2) ---
+        // --- PERSISTENT PLAYER DATA ---
         [Header("Abilities")]
         public bool dashUnlocked = false;
 
@@ -25,10 +27,11 @@ namespace TRIA.Core
         public int attackFragments = 0;
         public int healthFragments = 0;
 
-        [Header("World State")]
-        public string lastEntryID;
+        [Header("Checkpoint")]
+        public Vector2 lastCheckpointPosition;
+        public string lastCheckpointScene;
 
-        // HashSet is used because checking "Contains" is much faster than a List
+        // HashSet for collectibles
         public HashSet<string> collectedCollectibles = new HashSet<string>();
 
         // --- STATE MANAGEMENT ---
@@ -41,14 +44,14 @@ namespace TRIA.Core
                 Destroy(gameObject);
                 return;
             }
+
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
         {
-            // Set initial state based on scene
-            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            string currentScene = SceneManager.GetActiveScene().name;
             if (currentScene == "MainMenu")
                 ChangeState(GameState.MainMenu);
             else
@@ -62,7 +65,6 @@ namespace TRIA.Core
 
             CurrentState = newState;
 
-            // Handle Time and Physics
             switch (CurrentState)
             {
                 case GameState.MainMenu:
@@ -70,7 +72,7 @@ namespace TRIA.Core
                     Time.timeScale = 1f;
                     break;
                 case GameState.Pause:
-                    Time.timeScale = 0f; // Freeze the world
+                    Time.timeScale = 0f;
                     break;
             }
 
@@ -85,9 +87,7 @@ namespace TRIA.Core
                 ChangeState(GameState.Gameplay);
         }
 
-        // --- HELPER METHODS ---
         public static void TriggerFadeOut() => OnFadeOutRequested?.Invoke();
-
         public static void TriggerFadeIn() => OnFadeInRequested?.Invoke();
 
         public void ResetProgress()
@@ -105,6 +105,38 @@ namespace TRIA.Core
         {
             Debug.Log("Quitting Application...");
             Application.Quit();
+        }
+
+        // --- CHECKPOINT SYSTEM ---
+        public void SetCheckpoint(Vector2 position)
+        {
+            lastCheckpointPosition = position;
+            lastCheckpointScene = SceneManager.GetActiveScene().name;
+            Debug.Log($"Checkpoint set at {position} in scene {lastCheckpointScene}");
+        }
+
+        public void RespawnPlayer(GameObject player)
+        {
+            StartCoroutine(RespawnPlayerRoutine(player));
+        }
+
+        private IEnumerator RespawnPlayerRoutine(GameObject player)
+        {
+            string currentScene = SceneManager.GetActiveScene().name;
+
+            // If checkpoint is in another scene, load it
+            if (!string.IsNullOrEmpty(lastCheckpointScene) && lastCheckpointScene != currentScene)
+            {
+                AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(lastCheckpointScene);
+                while (!asyncLoad.isDone)
+                    yield return null;
+            }
+
+            // Wait one frame for player to be fully loaded
+            yield return null;
+
+            // Move player to last checkpoint
+            player.transform.position = lastCheckpointPosition;
         }
     }
 }

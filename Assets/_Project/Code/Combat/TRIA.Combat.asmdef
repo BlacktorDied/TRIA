@@ -1,0 +1,16 @@
+{
+    "name": "TRIA.Combat",
+    "rootNamespace": "",
+    "references": [
+        "GUID:eef8c95d829d3764dadf8339c687e1c6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

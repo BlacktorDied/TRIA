@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 879394816817977745}
   - component: {fileID: 5784408289036125532}
   - component: {fileID: 6640289436467093486}
+  - component: {fileID: 5902232220874824178}
   m_Layer: 7
   m_Name: BasicEnemy
   m_TagString: Untagged
@@ -185,6 +186,14 @@ MonoBehaviour:
   health: 0
   maxHealth: 3
   contactDamage: 1
+  knockbackDistance: 2
+  knockbackUpDistance: 0
+  knockbackDuration: 0.2
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  healthPickupPrefab: {fileID: 713807262270964672, guid: 1ddb335bd7990bb4e92ffe29a4d3c75b, type: 3}
+  healthDropChance: 0.25
   speed: 2.5
   patrolDistance: 2
   wallCheckDistance: 0.5
@@ -192,3 +201,25 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+--- !u!95 &5902232220874824178
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2292425446784895021}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: adac40fa5c7110d4a920ec41d3b568f5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

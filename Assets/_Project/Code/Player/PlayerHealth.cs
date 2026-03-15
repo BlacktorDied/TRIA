@@ -7,34 +7,20 @@ namespace TRIA.Player
     public class PlayerHealth : MonoBehaviour, IDamageable
     {
         [Header("Health Stats")]
-        [SerializeField]
-        private float maxHealthPoints = 3f;
-
-        [SerializeField]
-        private float currentHealth;
+        [SerializeField] private float maxHealthPoints = 3f;
+        [SerializeField] private float currentHealth;
 
         [Header("Death Settings")]
-        [SerializeField]
-        private float deathDelay = 1.5f;
+        [SerializeField] private float deathDelay = 1.5f;
 
         public bool IsDead { get; private set; }
 
-        private SpriteRenderer _sprite;
-        private Rigidbody2D _rb;
-        private PlayerController _controller;
-        private Vector2 _respawnPosition;
-
         private void Awake()
         {
-            _sprite = GetComponent<SpriteRenderer>();
-            _rb = GetComponent<Rigidbody2D>();
-            _controller = GetComponent<PlayerController>();
-
             if (GameManager.Instance != null)
                 maxHealthPoints = GameManager.Instance.playerMaxHealth;
 
             currentHealth = maxHealthPoints;
-            _respawnPosition = transform.position;
         }
 
         public void TakeDamage(float damage)
@@ -56,14 +42,10 @@ namespace TRIA.Player
             currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealthPoints);
         }
 
-        // --- ADD THIS METHOD TO FIX THE ERROR ---
         public void IncreaseMaxHealth(float amount)
         {
             maxHealthPoints += amount;
-
-            // Optionally heal the player by the same amount so the new heart isn't empty
             currentHealth += amount;
-
             Debug.Log($"Max Health Increased! New Max: {maxHealthPoints}");
         }
 
@@ -71,6 +53,7 @@ namespace TRIA.Player
         {
             if (IsDead)
                 return;
+
             IsDead = true;
 
             GameManager.TriggerFadeOut();
@@ -79,13 +62,26 @@ namespace TRIA.Player
 
         private IEnumerator RespawnRoutine()
         {
+            // Wait a bit for death animation / fade
             yield return new WaitForSecondsRealtime(deathDelay);
-            transform.position = _respawnPosition;
+
+            // Use GameManager to respawn player at last checkpoint
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.RespawnPlayer(gameObject);
+            }
+
             currentHealth = maxHealthPoints;
             IsDead = false;
+
             GameManager.TriggerFadeIn();
         }
 
-        public void SetCheckpoint(Vector2 position) => _respawnPosition = position;
+        // Allow checkpoint to update respawn position
+        public void SetCheckpoint(Vector2 position)
+        {
+            if (GameManager.Instance != null)
+                GameManager.Instance.SetCheckpoint(position);
+        }
     }
 }

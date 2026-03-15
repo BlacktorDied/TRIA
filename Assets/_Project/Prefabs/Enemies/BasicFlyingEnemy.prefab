@@ -171,10 +171,19 @@ MonoBehaviour:
   health: 0
   maxHealth: 3
   contactDamage: 1
+  knockbackDistance: 2
+  knockbackUpDistance: 0
+  knockbackDuration: 0.2
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  healthPickupPrefab: {fileID: 713807262270964672, guid: 1ddb335bd7990bb4e92ffe29a4d3c75b, type: 3}
+  healthDropChance: 0.25
   detectionRange: 15
   stopChasingRange: 12
   moveSpeed: 5
   acceleration: 5
+  slowDownRadius: 3
   roamRadius: 3
   roamSpeed: 1.5
   waitTimeAtPoint: 2
