@@ -600,7 +600,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5620737224371955212, guid: 2830c2cdab01f7c49ac3a9fef76a4051, type: 3}
       propertyPath: health
-      value: 10
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5620737224371955212, guid: 2830c2cdab01f7c49ac3a9fef76a4051, type: 3}
       propertyPath: arcHeight
@@ -608,7 +608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5620737224371955212, guid: 2830c2cdab01f7c49ac3a9fef76a4051, type: 3}
       propertyPath: maxHealth
-      value: 10
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5620737224371955212, guid: 2830c2cdab01f7c49ac3a9fef76a4051, type: 3}
       propertyPath: arcDuration

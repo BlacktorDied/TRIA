@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Project/Levels/Scenes/Bootstrap.unity
-    guid: 4d3f531c3f344fb4fac892f937d3ae64
-  - enabled: 1
     path: Assets/_Project/Levels/Scenes/MainMenu.unity
     guid: 3c7dcd439ccd0ac4b85f2cb4ef1b22c1
   - enabled: 1
@@ -50,9 +47,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Levels/Scenes/02_Assembly_Zone/Assembly_Zone_06.unity
     guid: 675e13d36614ae94aa0105ad7c550c68
-  - enabled: 1
-    path: Assets/Level/Scenes/TestScene2.unity
-    guid: 4b2e0f82660cb8445b182d097d89c2b4
   - enabled: 1
     path: Assets/_Project/Levels/Scenes/TestScene.unity
     guid: 37810e660367b884589f9e25d9ac3ad8

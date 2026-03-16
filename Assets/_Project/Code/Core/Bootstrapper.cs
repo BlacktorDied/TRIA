@@ -12,7 +12,6 @@ namespace TRIA.Core
             GameObject coreSystems = new GameObject("[CORE_SYSTEMS]");
             Object.DontDestroyOnLoad(coreSystems);
 
-            // Inside Bootstrapper.cs
             // Load and spawn the Master Persistent UI
             GameObject uiPrefab = Resources.Load<GameObject>("PersistentUI");
             if (uiPrefab != null)
@@ -27,7 +26,6 @@ namespace TRIA.Core
             coreSystems.AddComponent<SceneLoader>();
             coreSystems.AddComponent<PlayerManager>();
 
-            // Inside Bootstrapper.cs Execute()
             MusicManager music = coreSystems.AddComponent<MusicManager>();
 
             // We need two AudioSources for crossfading
@@ -37,7 +35,7 @@ namespace TRIA.Core
 
             // Use private reflection or make a 'Setup' method in MusicManager to link these
 
-            // In the future, we can also add our SaveManager, AudioManager, etc. here
+            // In the future, we can also add our SaveManager, etc. here
 
             Debug.Log("TRIA Bootstrapper: Core systems successfully initialized.");
         }
