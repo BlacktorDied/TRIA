@@ -1,0 +1,17 @@
+{
+    "name": "TRIA.Items",
+    "rootNamespace": "",
+    "references": [
+        "GUID:eef8c95d829d3764dadf8339c687e1c6",
+        "GUID:991f26ccb48e4344383f8c40b23da933"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

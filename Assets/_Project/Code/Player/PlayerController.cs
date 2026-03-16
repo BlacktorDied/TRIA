@@ -3,24 +3,30 @@ using UnityEngine.InputSystem;
 
 namespace TRIA.Player
 {
-    [RequireComponent(typeof(PlayerMovement), typeof(PlayerCombat))]
+    // Updated requirement: We now use PlayerAttack instead of PlayerCombat
+    [RequireComponent(typeof(PlayerMovement), typeof(PlayerAttack))]
     public class PlayerController : MonoBehaviour
     {
         private PlayerMovement _movement;
-        private PlayerCombat _combat;
+        private PlayerAttack _attack;
         private Vector2 _moveInput;
 
         private void Awake()
         {
             _movement = GetComponent<PlayerMovement>();
-            _combat = GetComponent<PlayerCombat>();
+            _attack = GetComponent<PlayerAttack>();
         }
 
+        // Called by PlayerInput (Send Messages / Broadcast Messages)
         public void OnMove(InputValue value)
         {
             _moveInput = value.Get<Vector2>();
+
+            // Tell the movement script where we want to go
             _movement.SetMoveInput(_moveInput);
-            _combat.SetMoveInput(_moveInput); // Needed for Up/Down attacks
+
+            // Note: We no longer need to send input to the Attack script
+            // because we removed top/bottom attacks!
         }
 
         public void OnJump(InputValue value)
@@ -39,8 +45,11 @@ namespace TRIA.Player
 
         public void OnAttack(InputValue value)
         {
+            // If the button is pressed, trigger the attack logic
             if (value.isPressed)
-                _combat.AttemptAttack();
+            {
+                _attack.OnAttack();
+            }
         }
     }
 }

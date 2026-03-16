@@ -389,6 +389,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0060f4d363f54274d87c0f1e9f71b4b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: TRIA.Enviroment::TRIA.Environment.MovingPlatform
-  speed: 2
-  waitTime: 0.5
+  speed: 6
   waypoints: []

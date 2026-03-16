@@ -14,11 +14,13 @@ GameObject:
   - component: {fileID: 7771980035192307371}
   - component: {fileID: 8303077765357727125}
   - component: {fileID: 1726182107448882416}
+  - component: {fileID: 7608982554184312870}
   - component: {fileID: 7119654112814698023}
-  - component: {fileID: 2655796701547406026}
   - component: {fileID: 9010025688493540325}
   - component: {fileID: 7027295861516597550}
   - component: {fileID: 1113627841707545497}
+  - component: {fileID: 3663231327478832568}
+  - component: {fileID: 4455732859404617841}
   - component: {fileID: 6463071199357062834}
   m_Layer: 6
   m_Name: Player
@@ -36,7 +38,7 @@ Transform:
   m_GameObject: {fileID: 1931986404110018942}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -22, y: 1.8, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 0.875, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -226,6 +228,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1340b89f537a234d91c705dc600c126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: TRIA.Player::TRIA.Player.PlayerController
+--- !u!114 &7608982554184312870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931986404110018942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7327f7a859680141a06eac4a366853f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TRIA.Player::TRIA.Player.PlayerAbilityHandler
+  unlockedAbilities: 
 --- !u!114 &7119654112814698023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,43 +254,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: TRIA.Player::TRIA.Player.PlayerMovement
   walkSpeed: 8
+  acceleration: 50
+  deceleration: 50
   jumpForce: 20
   maxAirJumps: 0
-  jumpCutMultiplier: 0.5
   fallMultiplier: 2
+  jumpCutMultiplier: 0.5
   coyoteTime: 0.1
   jumpBufferTime: 0.1
   dashSpeed: 20
-  dashTime: 0.15
+  dashDuration: 0.2
   dashCooldown: 0.6
+  knockbackDuration: 0.3
   boxSize: {x: 0.8, y: 0.05}
-  castDistance: 0.1
+  groundSkin: 0.05
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
---- !u!114 &2655796701547406026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931986404110018942}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a5058b178063404892e6cb42a0efc97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: TRIA.Player::TRIA.Player.PlayerCombat
-  damage: 1
-  attackDelay: 0.2
-  upAttackPoint: {fileID: 0}
-  sideAttackPoint: {fileID: 0}
-  downAttackPoint: {fileID: 0}
-  upAttackArea: {x: 0, y: 0}
-  sideAttackArea: {x: 0, y: 0}
-  downAttackArea: {x: 0, y: 0}
-  attackableLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!82 &9010025688493540325
 AudioSource:
   m_ObjectHideFlags: 0
@@ -487,12 +482,42 @@ MonoBehaviour:
   walkClip: {fileID: 8300000, guid: ef814a90521a1eb4396a4397bbaa7dd2, type: 3}
   jumpDashClip: {fileID: 8300000, guid: 26714ba5c5efd30428bd51164efd0b5a, type: 3}
   attackClip: {fileID: 8300000, guid: 8ff1e657535068b4fb64d4e23199528b, type: 3}
-  randomizeFootstepPitch: 1
-  footstepPitchMin: 0.95
-  footstepPitchMax: 1.05
-  randomizeSfxPitch: 1
-  sfxPitchMin: 0.97
-  sfxPitchMax: 1.03
+  pitchMin: 0.95
+  pitchMax: 1.05
+--- !u!114 &3663231327478832568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931986404110018942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9da837720391f548bd765dcf5c1a3a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TRIA.Player::TRIA.Player.PlayerAttack
+  damage: 1
+  attackDelay: 0.3
+  attackOffset: {x: 1, y: 0}
+  attackSize: {x: 1.5, y: 1.5}
+  attackableLayer:
+    serializedVersion: 2
+    m_Bits: 128
+--- !u!114 &4455732859404617841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931986404110018942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ed996610336ff348890317ec25f5717, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TRIA.Player::TRIA.Player.PlayerHealth
+  maxHealthPoints: 3
+  currentHealth: 0
+  deathDelay: 1.5
 --- !u!95 &6463071199357062834
 Animator:
   serializedVersion: 7
